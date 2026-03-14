@@ -1,0 +1,200 @@
+services:
+  ahmard-auth-service:
+    container_name: ahmard-auth-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    command: auth-service
+    env_file:
+      - .env
+      - .env.auth
+    environment:
+      TZ: "Africa/Lagos"
+      RUST_LOG: "${PROC_RUST_LOG}"
+      RUST_BACKTRACE: ${PROC_RUST_BACKTRACE}
+    volumes:
+      - "${PROC_DOCKER_VOLUME_PATH}/static:/ahmard/apps/refinery-procurement/resources/static"
+    ports:
+      - "${PROC_DOCKER_PRIVATE_IP_1}:${PROC_SERVER_AUTH_PORT}:${PROC_SERVER_AUTH_PORT}"
+      - "${PROC_DOCKER_PRIVATE_IP_2}:${PROC_SERVER_AUTH_PORT}:${PROC_SERVER_AUTH_PORT}"
+    networks:
+      - ahmard-main-network
+    dns:
+      - "${PROC_DOCKER_DNS_PUBLIC_1}"
+      - "${PROC_DOCKER_DNS_PUBLIC_2}"
+      - "${PROC_DOCKER_DNS_PREFIX}.254"
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:${PROC_SERVER_AUTH_PORT}/api/v1/health-check || exit 1" ]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "500m"
+        max-file: "50"
+
+  ahmard-admin-service:
+    container_name: ahmard-admin-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    command: admin-service
+    env_file:
+      - .env
+      - .env.admin
+    environment:
+      TZ: "Africa/Lagos"
+      RUST_LOG: "${PROC_RUST_LOG}"
+      RUST_BACKTRACE: ${PROC_RUST_BACKTRACE}
+    volumes:
+      - "${PROC_DOCKER_VOLUME_PATH}/static:/ahmard/apps/refinery-procurement/resources/static"
+    ports:
+      - "${PROC_DOCKER_PRIVATE_IP_1}:${PROC_SERVER_ADMIN_PORT}:${PROC_SERVER_ADMIN_PORT}"
+      - "${PROC_DOCKER_PRIVATE_IP_2}:${PROC_SERVER_ADMIN_PORT}:${PROC_SERVER_ADMIN_PORT}"
+    networks:
+      - ahmard-main-network
+    dns:
+      - "${PROC_DOCKER_DNS_PUBLIC_1}"
+      - "${PROC_DOCKER_DNS_PUBLIC_2}"
+      - "${PROC_DOCKER_DNS_PREFIX}.254"
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:${PROC_SERVER_ADMIN_PORT}/api/v1/health-check || exit 1" ]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "500m"
+        max-file: "50"
+
+  ahmard-catalog-service:
+    container_name: ahmard-catalog-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    command: catalog-service
+    env_file:
+      - .env
+      - .env.catalog
+    environment:
+      TZ: "Africa/Lagos"
+      RUST_LOG: "${PROC_RUST_LOG}"
+      RUST_BACKTRACE: ${PROC_RUST_BACKTRACE}
+    volumes:
+      - "${PROC_DOCKER_VOLUME_PATH}/static:/ahmard/apps/refinery-procurement/resources/static"
+    ports:
+      - "${PROC_DOCKER_PRIVATE_IP_1}:${PROC_SERVER_CATALOG_PORT}:${PROC_SERVER_CATALOG_PORT}"
+      - "${PROC_DOCKER_PRIVATE_IP_2}:${PROC_SERVER_CATALOG_PORT}:${PROC_SERVER_CATALOG_PORT}"
+    networks:
+      - ahmard-main-network
+    dns:
+      - "${PROC_DOCKER_DNS_PUBLIC_1}"
+      - "${PROC_DOCKER_DNS_PUBLIC_2}"
+      - "${PROC_DOCKER_DNS_PREFIX}.254"
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:${PROC_SERVER_CATALOG_PORT}/api/v1/health-check || exit 1" ]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "500m"
+        max-file: "50"
+
+  ahmard-procurement-service:
+    container_name: ahmard-procurement-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    command: procurement-service
+    env_file:
+      - .env
+      - .env.procurement
+    environment:
+      TZ: "Africa/Lagos"
+      RUST_LOG: "${PROC_RUST_LOG}"
+      RUST_BACKTRACE: ${PROC_RUST_BACKTRACE}
+    volumes:
+      - "${PROC_DOCKER_VOLUME_PATH}/static:/ahmard/apps/refinery-procurement/resources/static"
+    ports:
+      - "${PROC_DOCKER_PRIVATE_IP_1}:${PROC_SERVER_PROCUREMENT_PORT}:${PROC_SERVER_PROCUREMENT_PORT}"
+      - "${PROC_DOCKER_PRIVATE_IP_2}:${PROC_SERVER_PROCUREMENT_PORT}:${PROC_SERVER_PROCUREMENT_PORT}"
+    networks:
+      - ahmard-main-network
+    dns:
+      - "${PROC_DOCKER_DNS_PUBLIC_1}"
+      - "${PROC_DOCKER_DNS_PUBLIC_2}"
+      - "${PROC_DOCKER_DNS_PREFIX}.254"
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:${PROC_SERVER_PROCUREMENT_PORT}/api/v1/health-check || exit 1" ]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "500m"
+        max-file: "50"
+
+  ahmard-worker-service:
+    container_name: ahmard-worker-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    command: worker-service
+    env_file:
+      - .env
+      - .env.worker
+    environment:
+      TZ: "Africa/Lagos"
+      RUST_LOG: "${PROC_RUST_LOG}"
+      RUST_BACKTRACE: ${PROC_RUST_BACKTRACE}
+    volumes:
+      - "${PROC_DOCKER_VOLUME_PATH}/static:/ahmard/apps/refinery-procurement/resources/static"
+    ports:
+      - "${PROC_DOCKER_PRIVATE_IP_1}:${PROC_SERVER_WORKER_PORT}:${PROC_SERVER_WORKER_PORT}"
+      - "${PROC_DOCKER_PRIVATE_IP_2}:${PROC_SERVER_WORKER_PORT}:${PROC_SERVER_WORKER_PORT}"
+    networks:
+      - ahmard-main-network
+    dns:
+      - "${PROC_DOCKER_DNS_PUBLIC_1}"
+      - "${PROC_DOCKER_DNS_PUBLIC_2}"
+      - "${PROC_DOCKER_DNS_PREFIX}.254"
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    #    healthcheck:
+    #      test: [ "CMD-SHELL", "curl -f http://localhost:${PROC_SERVER_WORKER_PORT}/api/v1/system/health-check || exit 1" ]
+    #      interval: 1m30s
+    #      timeout: 5s
+    #      retries: 3
+    #      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "500m"
+        max-file: "50"
+
+networks:
+  ahmard-main-network:
+    name: ahmard-main-network
+    external: true

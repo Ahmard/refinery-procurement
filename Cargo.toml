@@ -1,0 +1,38 @@
+[workspace]
+resolver = "3"
+members = [
+    "apps/auth",
+    "apps/admin",
+    "apps/catalog",
+    "apps/procurement",
+    "apps/worker",
+    "libs/database",
+    "libs/domain",
+]
+
+[workspace.dependencies]
+tracing = "0.1.44"
+serde = { version = "1.0.228", features = ["std"] }
+serde_json = { version= "1.0.149" }
+strum_macros = { version = "0.28.0" }
+axum = { version = "0.8.8", features = ["multipart"] }
+strum = { version = "0.28.0", default-features = false, features = ["std"] }
+bigdecimal = { version = "0.4.10", features = ["serde", "std"] }
+validator = { version = "0.20.0", features = ["derive"] }
+uuid = { version = "1.22.0", features = ["v4", "serde"] }
+tokio = { version= "1.50.0", features = ["macros", "rt-multi-thread", "signal"] }
+rand = "0.10.0"
+url = "2.5.8"
+
+chrono = { version= "0.4.44", features = ["serde"] }
+diesel = { version = "2.3.7", features = ["postgres", "serde_json", "uuid", "chrono", "64-column-tables", "numeric"] }
+
+foxtive-supervisor = { version = "0.2.0" }
+foxtive-macros = { version = "0.4.2", features = ["database"] }
+foxtive-axum = { version = "0.12.0", features = ["static", "validator", "templating"] }
+foxtive = { version = "0.25.4", features = ["database", "redis", "rabbitmq", "cache-redis", "jwt", "crypto", "http", "openapi"] }
+
+# OpenAPI documentation
+utoipa = { version = "5.4.0", features = ["axum_extras", "uuid", "chrono", "decimal"] }
+utoipa-swagger-ui = { version = "9.0.2", features = ["axum"] }
+
