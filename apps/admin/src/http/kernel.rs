@@ -18,8 +18,7 @@ pub fn boot() -> Router {
                     Url::with_primary("Admin", "/admin/api-docs/openapi.json", true),
                     Url::new("Authentication", "/auth/api-docs/openapi.json"),
                     Url::new("Catalog", "/catalog/api-docs/openapi.json"),
-                    Url::new("Procurement", "/payments/api-docs/openapi.json"),
-                    Url::new("Payments", "/procurement/api-docs/openapi.json"),
+                    Url::new("Procurement", "/procurement/api-docs/openapi.json"),
                 ])
             )
     } else {
