@@ -6,11 +6,20 @@ use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
 pub fn boot() -> Router {
-    let openapi_path = if is_live() {
-        "/catalog/api-docs/openapi.json"
+    // The spec is always served at this path  axum app
+    let spec_path = "/api-docs/openapi.json";
+
+    // But the browser needs to request it relative to the proxy-mounted prefix
+    let swagger_ui = if is_live() {
+        SwaggerUi::new("/swagger-ui")
+            .url(spec_path, ApiDoc::openapi())
+            .config(
+                utoipa_swagger_ui::Config::new(["/catalog/api-docs/openapi.json"])
+            )
     } else {
-        "/api-docs/openapi.json"
+        SwaggerUi::new("/swagger-ui")
+            .url(spec_path, ApiDoc::openapi())
     };
 
-    controllers::routes().merge(SwaggerUi::new("/swagger-ui").url(openapi_path, ApiDoc::openapi()))
+    controllers::routes().merge(swagger_ui)
 }

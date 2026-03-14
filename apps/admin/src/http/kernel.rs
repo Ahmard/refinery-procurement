@@ -2,15 +2,30 @@ use crate::http::controllers;
 use crate::http::openapi::ApiDoc;
 use axum::Router;
 use utoipa::OpenApi;
-use utoipa_swagger_ui::SwaggerUi;
+use utoipa_swagger_ui::{Config, SwaggerUi, Url};
 use domain::is_live;
 
 pub fn boot() -> Router {
-    let openapi_path = if is_live() {
-        "/admin/api-docs/openapi.json"
+    // The spec is always served at this path  axum app
+    let spec_path = "/api-docs/openapi.json";
+
+    // But the browser needs to request it relative to the proxy-mounted prefix
+    let swagger_ui = if is_live() {
+        SwaggerUi::new("/swagger-ui")
+            .url(spec_path, ApiDoc::openapi())
+            .config(
+                Config::new([
+                    Url::with_primary("Admin", "/admin/api-docs/openapi.json", true),
+                    Url::new("Authentication", "/auth/api-docs/openapi.json"),
+                    Url::new("Catalog", "/catalog/api-docs/openapi.json"),
+                    Url::new("Procurement", "/payments/api-docs/openapi.json"),
+                    Url::new("Payments", "/procurement/api-docs/openapi.json"),
+                ])
+            )
     } else {
-        "/api-docs/openapi.json"
+        SwaggerUi::new("/swagger-ui")
+            .url(spec_path, ApiDoc::openapi())
     };
 
-    controllers::routes().merge(SwaggerUi::new("/swagger-ui").url(openapi_path, ApiDoc::openapi()))
+    controllers::routes().merge(swagger_ui)
 }
