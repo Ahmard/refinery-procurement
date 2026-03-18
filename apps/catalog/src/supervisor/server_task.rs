@@ -1,5 +1,4 @@
 use crate::http;
-use axum::http::{HeaderName, Method};
 use foxtive::helpers::env;
 use foxtive::results::AppResult;
 use foxtive_axum::server::{Server, StaticFileConfig};
@@ -7,6 +6,7 @@ use foxtive_supervisor::contracts::SupervisedTask;
 use tokio::sync::broadcast;
 use tracing::{info, warn};
 use domain::APP_CODE;
+use domain::http::server_shared::{allowed_headers, allowed_methods};
 
 pub struct ServerTask {
     shutdown_tx: broadcast::Sender<()>,
@@ -50,19 +50,8 @@ impl SupervisedTask for ServerTask {
                 dir: "resources/static".to_string(),
                 path: "/static".to_string(),
             })
-            .allowed_headers(vec![
-                HeaderName::from_static("accept"),
-                HeaderName::from_static("authorization"),
-                HeaderName::from_static("content-type"),
-            ])
-            .allowed_methods(vec![
-                Method::GET,
-                Method::POST,
-                Method::PUT,
-                Method::PATCH,
-                Method::DELETE,
-                Method::OPTIONS,
-            ])
+            .allowed_headers(allowed_headers())
+            .allowed_methods(allowed_methods())
             .bootstrap(domain::setup::finish_setup)
             .on_started(async { info!("Server started successfully") })
             .shutdown_signal(async move {
