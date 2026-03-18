@@ -65,7 +65,7 @@ diesel::table! {
         id -> Uuid,
         purchase_order_id -> Uuid,
         catalog_item_id -> Uuid,
-        quantity -> Int4,
+        quantity -> Numeric,
         snapshot_price -> Numeric,
         snapshot_lead_time -> Nullable<Int4>,
         created_by -> Uuid,
@@ -100,6 +100,7 @@ diesel::table! {
         submitted_at -> Nullable<Timestamp>,
         created_at -> Timestamp,
         updated_at -> Timestamp,
+        total_cost -> Numeric,
     }
 }
 

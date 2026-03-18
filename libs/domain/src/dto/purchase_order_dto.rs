@@ -51,7 +51,7 @@ pub struct PurchaseOrderItemResponse {
     pub id: Uuid,
     pub catalog_item_id: String,
     pub item_name: String,
-    pub quantity: i32,
+    pub quantity: BigDecimal,
     pub unit_price: BigDecimal,
     pub total_price: BigDecimal,
     pub snapshot_lead_time: Option<i32>,

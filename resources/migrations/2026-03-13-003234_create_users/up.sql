@@ -25,4 +25,7 @@ VALUES ('2a78f742-465e-465c-a4dc-1d9678891024', 'superadmin', 'superadmin@ahmard
         'SUPERADMIN', 'ACTIVE'),
        ('4bc4d6c1-67d1-444e-9b94-7370376d35ac', 'supplier', 'supplier@ahmard.com',
         '$argon2i$v=19$m=4096,t=3,p=1$NTFjYWYyYzc3YWNjZjU3OWJlMjExNTUxZjdiNGI1YmU$uowVYN+UsXOCZNx3JicBppmteh4zDIWvW8gc5XwmSsQ',
-        'SUPPLIER', 'ACTIVE');
+        'SUPPLIER', 'ACTIVE'),
+       ('43988254-b494-44c5-9df9-c377ba275a19', 'user', 'user@ahmard.com',
+        '$argon2i$v=19$m=4096,t=3,p=1$NTFjYWYyYzc3YWNjZjU3OWJlMjExNTUxZjdiNGI1YmU$uowVYN+UsXOCZNx3JicBppmteh4zDIWvW8gc5XwmSsQ',
+        'USER', 'ACTIVE');

@@ -14,6 +14,7 @@ pub mod repositories;
 pub mod services;
 pub mod setup;
 pub mod state;
+pub mod responses;
 
 pub static APP: OnceLock<AppState> = OnceLock::new();
 pub static APP_CODE: &str = "PROC";

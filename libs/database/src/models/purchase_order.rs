@@ -1,3 +1,4 @@
+use bigdecimal::BigDecimal;
 use chrono::NaiveDateTime;
 use diesel::{AsChangeset, Identifiable, Insertable, Queryable};
 use serde::Serialize;
@@ -23,6 +24,7 @@ pub struct PurchaseOrder {
     pub submitted_at: Option<NaiveDateTime>,
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
+    pub total_cost: BigDecimal,
 }
 
 #[derive(Insertable)]
@@ -38,4 +40,5 @@ pub struct PurchaseOrderInsertable {
     pub status: PurchaseOrderStatus,
     pub idempotency_key: Option<String>,
     pub submitted_at: Option<NaiveDateTime>,
+    pub total_cost: BigDecimal,
 }

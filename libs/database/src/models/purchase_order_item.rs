@@ -12,7 +12,7 @@ pub struct PurchaseOrderItem {
     pub id: Uuid,
     pub purchase_order_id: Uuid,
     pub catalog_item_id: Uuid,
-    pub quantity: i32,
+    pub quantity: BigDecimal,
     pub snapshot_price: BigDecimal,
     pub snapshot_lead_time: Option<i32>,
     pub created_by: Uuid,
@@ -25,7 +25,7 @@ pub struct PurchaseOrderItem {
 pub struct PurchaseOrderItemInsertable {
     pub purchase_order_id: Uuid,
     pub catalog_item_id: Uuid,
-    pub quantity: i32,
+    pub quantity: BigDecimal,
     pub snapshot_price: BigDecimal,
     pub snapshot_lead_time: Option<i32>,
     pub created_by: Uuid,
