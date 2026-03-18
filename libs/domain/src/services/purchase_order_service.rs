@@ -33,7 +33,6 @@ use crate::services::AuditLogService;
 use bigdecimal::BigDecimal;
 use chrono::Utc;
 use database::enums::purchase_order_status::PurchaseOrderStatus;
-use database::models::catalog_item::CatalogItem;
 use database::models::purchase_order::{PurchaseOrder, PurchaseOrderInsertable};
 use database::models::purchase_order_item::PurchaseOrderItemInsertable;
 use database::models::purchase_order_status_history::PurchaseOrderStatusHistoryInsertable;
