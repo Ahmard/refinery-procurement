@@ -33,6 +33,7 @@ use crate::services::AuditLogService;
 use bigdecimal::BigDecimal;
 use chrono::Utc;
 use database::enums::purchase_order_status::PurchaseOrderStatus;
+use database::models::catalog_item::CatalogItem;
 use database::models::purchase_order::{PurchaseOrder, PurchaseOrderInsertable};
 use database::models::purchase_order_item::PurchaseOrderItemInsertable;
 use database::models::purchase_order_status_history::PurchaseOrderStatusHistoryInsertable;
@@ -40,6 +41,7 @@ use foxtive::helpers::run_async;
 use foxtive::prelude::AppResult;
 use foxtive::{conflict, invalid, not_found};
 use serde_json::json;
+use std::str::FromStr;
 use tracing::{debug, info};
 use uuid::Uuid;
 
@@ -170,9 +172,17 @@ impl PurchaseOrderService {
             ));
         }
 
-        // Find catalog item by secondary ID
-        let catalog_item = CatalogItemRepository::find_by_secondary_id(&request.item_id)?
-            .ok_or_else(|| not_found!("Catalog item '{}' not found", request.item_id))?;
+        // Find catalog item
+        let catalog_item = match CatalogItemRepository::find_by_secondary_id(&request.item_id)? {
+            Some(item) => item,
+            None => {
+                let uuid = Uuid::from_str(&request.item_id)
+                    .ok()
+                    .ok_or(not_found!("Catalog item '{}' not found", request.item_id))?;
+
+                CatalogItemRepository::find(uuid)?
+            }
+        };
 
         // Business rule: All items must be from the same supplier
         // Check existing items in the order
