@@ -80,8 +80,7 @@ impl PurchaseOrderService {
         debug!("Validating purchase order creation parameters");
 
         // Check idempotency - return existing order if key already used
-        if let Some(existing) =
-            PurchaseOrderRepository::find_by_idempotency_key(&idempotency_key)?
+        if let Some(existing) = PurchaseOrderRepository::find_by_idempotency_key(&idempotency_key)?
         {
             info!(order_id = %existing.id, "Returning existing order for idempotency key");
             return Ok(existing);
@@ -102,6 +101,7 @@ impl PurchaseOrderService {
             status: PurchaseOrderStatus::Draft,
             idempotency_key: Some(idempotency_key),
             submitted_at: None,
+            total_cost: BigDecimal::from(0),
         };
 
         // Create order via repository
@@ -205,18 +205,15 @@ impl PurchaseOrderService {
         let unit_price = catalog_item.price_usd.clone();
         let _total_price = &unit_price * BigDecimal::from(request.quantity as i64);
 
-        // Build insertable order item
-        let new_item = PurchaseOrderItemInsertable {
+        // Add item via repository
+        PurchaseOrderItemRepository::add_item(PurchaseOrderItemInsertable {
             purchase_order_id: order_id,
             catalog_item_id: catalog_item.id,
-            quantity: request.quantity,
+            quantity: BigDecimal::from(request.quantity),
             snapshot_price: unit_price,
             snapshot_lead_time: catalog_item.lead_time_days,
             created_by,
-        };
-
-        // Add item via repository
-        PurchaseOrderItemRepository::add_item(new_item)?;
+        })?;
 
         // Record audit log
         let _ = AuditLogService::record_activity(AuditLogCreateRequest {
@@ -231,7 +228,7 @@ impl PurchaseOrderService {
         });
 
         // Return updated order
-        let updated_order = PurchaseOrderRepository::find(order_id)?;
+        let updated_order = Self::recompute_price(order_id)?;
 
         info!(
             order_id = %updated_order.id,
@@ -400,7 +397,7 @@ impl PurchaseOrderService {
                     .map(|ci| ci.name)
                     .unwrap_or_else(|_| "Unknown Item".to_string());
 
-                let total_price = &item.snapshot_price * BigDecimal::from(item.quantity as i64);
+                let total_price = &item.snapshot_price * item.quantity.clone();
 
                 PurchaseOrderItemResponse {
                     id: item.id,
@@ -489,6 +486,13 @@ impl PurchaseOrderService {
 
         PurchaseOrderStatusHistoryRepository::create(history_entry)?;
         Ok(())
+    }
+
+    /// Calculate and update total price for an order
+    pub fn recompute_price(id: Uuid) -> AppResult<PurchaseOrder> {
+        let mut order = PurchaseOrderRepository::find(id)?;
+        order.total_cost = PurchaseOrderItemRepository::sum_cost(id)?;
+        PurchaseOrderRepository::update(order)
     }
 
     /// Emit an event for external systems (audit logs, event streams, etc.)

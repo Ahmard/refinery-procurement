@@ -5,16 +5,17 @@ use crate::impl_crud_repo;
 use chrono::NaiveDate;
 use database::enums::purchase_order_status::PurchaseOrderStatus;
 use database::models::purchase_order::{PurchaseOrder, PurchaseOrderInsertable};
-use database::schema::purchase_orders;
+use database::schema::{purchase_orders, suppliers, users};
 use diesel::{
     BoolExpressionMethods, ExpressionMethods, PgTextExpressionMethods, QueryDsl, RunQueryDsl,
 };
-use foxtive::database::ext::OptionalResultExt;
+use foxtive::database::ext::{OptionalResultExt, PaginationResultExt};
 use foxtive::database::pagination::Paginate;
 use foxtive::prelude::{AppResult, AppStateExt, IntoAppResult};
 use foxtive::results::AppPaginationResult;
 use foxtive::FOXTIVE;
 use uuid::Uuid;
+use crate::responses::PurchaseOrderListResponse;
 
 pub struct PurchaseOrderRepository;
 
@@ -28,8 +29,11 @@ impl_crud_repo!(
 
 impl PurchaseOrderRepository {
     /// List purchase orders with filters and pagination
-    pub fn list(filter: PurchaseOrderListFilter) -> AppPaginationResult<PurchaseOrder> {
-        let mut builder = purchase_orders::table.into_boxed();
+    pub fn list(filter: PurchaseOrderListFilter) -> AppPaginationResult<PurchaseOrderListResponse> {
+        let mut builder = purchase_orders::table
+            .inner_join(suppliers::table)
+            .inner_join(users::table)
+            .into_boxed();
 
         if filter.query.search().is_some() {
             builder = builder.filter(
@@ -55,6 +59,7 @@ impl PurchaseOrderRepository {
             .paginate(filter.query.curr_page())
             .per_page(filter.query.per_page())
             .load_and_count_pages(&mut *FOXTIVE.db_conn()?)
+            .map_page_data(PurchaseOrderListResponse::make)
     }
 
     /// Find purchase order by PO number
