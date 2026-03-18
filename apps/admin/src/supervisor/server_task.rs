@@ -1,5 +1,5 @@
 use crate::http;
-use domain::http::server_shared::{allowed_headers, allowed_methods};
+use domain::http::server_shared::{allowed_headers, allowed_methods, allowed_origins};
 use domain::APP_CODE;
 use foxtive::helpers::env;
 use foxtive::results::AppResult;
@@ -50,6 +50,7 @@ impl SupervisedTask for ServerTask {
                 dir: "resources/static".to_string(),
                 path: "/static".to_string(),
             })
+            .allowed_origins(allowed_origins())
             .allowed_headers(allowed_headers())
             .allowed_methods(allowed_methods())
             .bootstrap(domain::setup::finish_setup)
