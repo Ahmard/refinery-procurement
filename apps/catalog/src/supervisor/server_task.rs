@@ -6,7 +6,7 @@ use foxtive_supervisor::contracts::SupervisedTask;
 use tokio::sync::broadcast;
 use tracing::{info, warn};
 use domain::APP_CODE;
-use domain::http::server_shared::{allowed_headers, allowed_methods};
+use domain::http::server_shared::{allowed_headers, allowed_methods, allowed_origins};
 
 pub struct ServerTask {
     shutdown_tx: broadcast::Sender<()>,
@@ -50,6 +50,7 @@ impl SupervisedTask for ServerTask {
                 dir: "resources/static".to_string(),
                 path: "/static".to_string(),
             })
+            .allowed_origins(allowed_origins())
             .allowed_headers(allowed_headers())
             .allowed_methods(allowed_methods())
             .bootstrap(domain::setup::finish_setup)
