@@ -56,6 +56,7 @@ impl PurchaseOrderRepository {
         }
 
         builder
+            .order_by(purchase_orders::created_at.desc())
             .paginate(filter.query.curr_page())
             .per_page(filter.query.per_page())
             .load_and_count_pages(&mut *FOXTIVE.db_conn()?)
