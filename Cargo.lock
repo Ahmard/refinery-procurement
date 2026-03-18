@@ -574,9 +574,9 @@ dependencies = [
 
 [[package]]
 name = "cc"
-version = "1.2.56"
+version = "1.2.57"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aebf35691d1bfb0ac386a69bac2fde4dd276fb618cf8bf4f5318fe285e821bb2"
+checksum = "7a0dd1ca384932ff3641c8718a02769f1698e7563dc6974ffd03346116310423"
 dependencies = [
  "find-msvc-tools",
  "jobserver",
@@ -1429,9 +1429,9 @@ dependencies = [
 
 [[package]]
 name = "foxtive-axum"
-version = "0.12.0"
+version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b44bc5212124bb59e222e425da40a47e963a9910cbabbf0e360e3c0b121a40a2"
+checksum = "b53a8a9ae590997dbaf324822036c9fd1c935c150669f1b4298e6d8b636501f0"
 dependencies = [
  "axum",
  "foxtive",

@@ -20,6 +20,6 @@ pub static APP_CODE: &str = "PROC";
 
 pub fn is_live() -> bool {
     env::var(APP_CODE, "APP_ENVIRONMENT")
-        .map(|val| if val == "production" { true } else { false })
+        .map(|val| val == "production")
         .unwrap_or(false)
 }
